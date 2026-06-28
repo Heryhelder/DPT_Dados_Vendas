@@ -30,9 +30,9 @@ description: "Task list for CSV data extraction feature"
 
 **Purpose**: Project initialization and basic structure
 
-- [ ] T001 Create project directory structure (src/, tests/, tests/data/, data/)
-- [ ] T002 [P] Create src/__init__.py and tests/__init__.py
-- [ ] T003 [P] Create pyproject.toml with dependencies (pandas>=2.2,<3, pytest, ruff, ipykernel>=7.2.0)
+- [X] T001 Create project directory structure (src/, tests/, tests/data/, data/)
+- [X] T002 [P] Create src/__init__.py and tests/__init__.py
+- [X] T003 [P] Create pyproject.toml with dependencies (pandas>=2.2,<3, pytest, ruff, ipykernel>=7.2.0)
 
 ---
 
@@ -42,10 +42,10 @@ description: "Task list for CSV data extraction feature"
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete
 
-- [ ] T004 Create configuration constants in src/config.py (DEFAULT_DELIMITER, DEFAULT_ENCODING, MAX_FILE_SIZE, SUPPORTED_ENCODINGS, SUPPORTED_DELIMITERS)
-- [ ] T005 [P] Create golden data CSV files in tests/data/ (sample_10rows.csv with 10 rows, 5 columns)
-- [ ] T006 [P] Create malformed CSV golden data in tests/data/sample_malformed.csv
-- [ ] T006a [P] Create empty CSV golden data in tests/data/sample_empty.csv
+- [X] T004 Create configuration constants in src/config.py (DEFAULT_DELIMITER, DEFAULT_ENCODING, MAX_FILE_SIZE, SUPPORTED_ENCODINGS, SUPPORTED_DELIMITERS)
+- [X] T005 [P] Create golden data CSV files in tests/data/ (sample_10rows.csv with 10 rows, 5 columns including valores extremos: negativo, decimal, notação científica, booleano, data, texto)
+- [X] T006 [P] Create malformed CSV golden data in tests/data/sample_malformed.csv
+- [X] T006a [P] Create empty CSV golden data in tests/data/sample_empty.csv
 
 **Checkpoint**: Foundation ready - user story implementation can now begin in parallel
 
@@ -61,14 +61,14 @@ description: "Task list for CSV data extraction feature"
 
 > **NOTE: Write these tests FIRST, ensure they FAIL before implementation**
 
-- [ ] T007 [P] [US1] Write failing test for basic CSV loading (10 rows, column names preserved) in tests/test_extract.py
-- [ ] T008 [P] [US1] Write failing test for type inference (numeric columns as numbers, text as text) in tests/test_extract.py
-- [ ] T008b [P] [US1] Write failing test for structured logging FR-011 (verificar path, linhas, duração no registro de log) in tests/test_extract.py
+- [X] T007 [P] [US1] Write failing test for basic CSV loading (10 rows, column names preserved) in tests/test_extract.py
+- [X] T008 [P] [US1] Write failing test for type inference (numeric columns as numbers, text as text) in tests/test_extract.py
+- [X] T008b [P] [US1] Write failing test for structured logging FR-011 (verificar path, linhas, duração no registro de log) in tests/test_extract.py
 
 ### Implementation for User Story 1
 
-- [ ] T009 [US1] Implement extract_csv() function (FR-001, FR-002, FR-003) with basic path param, pd.read_csv() and automatic type inference in src/extract.py
-- [ ] T010 [US1] Add structured logging (FR-011) to extract operation in src/extract.py
+- [X] T009 [US1] Implement extract_csv() function (FR-001, FR-002, FR-003) with basic path param, pd.read_csv() and automatic type inference in src/extract.py
+- [X] T010 [US1] Add structured logging (FR-011) to extract operation in src/extract.py
 
 **Checkpoint**: At this point, User Story 1 should be fully functional and testable independently
 
@@ -84,15 +84,15 @@ description: "Task list for CSV data extraction feature"
 
 > **NOTE: Write these tests FIRST, ensure they FAIL before implementation**
 
-- [ ] T011 [P] [US2] Write failing test for custom delimiter (semicolon) in tests/test_extract.py
-- [ ] T012 [P] [US2] Write failing test for custom encoding (Latin-1 with accented chars) in tests/test_extract.py
-- [ ] T013 [P] [US2] Write failing test for explicit dtypes (date column) in tests/test_extract.py
+- [X] T011 [P] [US2] Write failing test for custom delimiter (semicolon) in tests/test_extract.py
+- [X] T012 [P] [US2] Write failing test for custom encoding (Latin-1 with accented chars) in tests/test_extract.py
+- [X] T013 [P] [US2] Write failing test for explicit dtypes (date column) in tests/test_extract.py
 
 ### Implementation for User Story 2
 
-- [ ] T014 [US2] Implement custom delimiter parameter (FR-004) in src/extract.py
-- [ ] T015 [US2] Implement custom encoding parameter (FR-005) in src/extract.py
-- [ ] T016 [US2] Implement explicit dtypes parameter (FR-006) in src/extract.py
+- [X] T014 [US2] Implement custom delimiter parameter (FR-004) in src/extract.py
+- [X] T015 [US2] Implement custom encoding parameter (FR-005) in src/extract.py
+- [X] T016 [US2] Implement explicit dtypes parameter (FR-006) in src/extract.py
 
 **Checkpoint**: User Stories 1 AND 2 should both work independently
 
@@ -108,17 +108,17 @@ description: "Task list for CSV data extraction feature"
 
 > **NOTE: Write these tests FIRST, ensure they FAIL before implementation**
 
-- [ ] T017 [P] [US3] Write failing test for FileNotFoundError FR-007 (verificar mensagem em português) in tests/test_extract.py
-- [ ] T018 [P] [US3] Write failing test for empty CSV detection FR-008 (verificar "CSV vazio" em português) in tests/test_extract.py
-- [ ] T019 [P] [US3] Write failing test for malformed CSV detection FR-009 (verificar mensagem descritiva em português) in tests/test_extract.py
-- [ ] T020 [P] [US3] Write failing test for file size > 100MB rejection FR-010 (verificar mensagem de rejeição em português) in tests/test_extract.py
+- [X] T017 [P] [US3] Write failing test for FileNotFoundError FR-007 (verificar mensagem em português) in tests/test_extract.py
+- [X] T018 [P] [US3] Write failing test for empty CSV detection FR-008 (verificar "CSV vazio" em português) in tests/test_extract.py
+- [X] T019 [P] [US3] Write failing test for malformed CSV detection FR-009 (verificar mensagem descritiva em português) in tests/test_extract.py
+- [X] T020 [P] [US3] Write failing test for file size > 100MB rejection FR-010 (verificar mensagem de rejeição em português) in tests/test_extract.py
 
 ### Implementation for User Story 3
 
-- [ ] T021 [US3] Implement FileNotFoundError handling (FR-007) in src/extract.py
-- [ ] T022 [US3] Implement empty CSV validation (FR-008) in src/extract.py
-- [ ] T023 [US3] Implement malformed CSV detection (FR-009) in src/extract.py
-- [ ] T024 [US3] Implement file size limit check (FR-010) in src/extract.py
+- [X] T021 [US3] Implement FileNotFoundError handling (FR-007) in src/extract.py
+- [X] T022 [US3] Implement empty CSV validation (FR-008) in src/extract.py
+- [X] T023 [US3] Implement malformed CSV detection (FR-009) in src/extract.py
+- [X] T024 [US3] Implement file size limit check (FR-010) in src/extract.py
 
 **Checkpoint**: All user stories should now be independently functional
 
@@ -128,9 +128,9 @@ description: "Task list for CSV data extraction feature"
 
 **Purpose**: Improvements that affect multiple user stories
 
-- [ ] T025 [P] Run ruff linter and fix all issues
-- [ ] T026 [P] Run full test suite and confirm all tests pass (green)
-- [ ] T027 Run quickstart.md validation
+- [ ] T025 [P] Run ruff linter and fix all issues (⚠️ bloqueado: ruff não instalado)
+- [ ] T026 [P] Run full test suite and confirm all tests pass (green) (⚠️ bloqueado: pytest + pandas não instalados)
+- [ ] T027 Run quickstart.md validation (⚠️ bloqueado: dependências não instaladas)
 
 ---
 

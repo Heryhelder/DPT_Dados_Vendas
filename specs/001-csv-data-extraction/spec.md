@@ -92,8 +92,11 @@ verificar que uma exceção descritiva é lançada.
    **When** a função de extração é chamada,
    **Then** uma exceção com mensagem "CSV vazio" é lançada.
 3. **Given** um arquivo CSV com linhas de tamanho inconsistente,
-   **When** a função de extração é chamada,
-   **Then** uma exceção com mensagem descritiva é lançada.
+    **When** a função de extração é chamada,
+    **Then** uma exceção com mensagem descritiva é lançada.
+4. **Given** um arquivo CSV maior que 100MB,
+    **When** a função de extração é chamada,
+    **Then** uma exceção com mensagem "Arquivo excede o limite de 100MB" é lançada.
 
 ---
 
@@ -104,7 +107,10 @@ verificar que uma exceção descritiva é lançada.
 - Arquivo CSV com valores nulos/missing representados como `NA`, `null`,
   ou string vazia
 - Arquivo CSV com aspas escapando delimitadores no conteúdo
-- Caminho de arquivo com espaços ou caracteres especiais
+- Caminho de arquivo com espaços ou caracteres especiais é suportado
+  (Python/Pandas lida nativamente)
+- Linhas em branco no final do CSV são ignoradas (comportamento padrão
+  do Pandas)
 - Arquivo CSV com tamanho superior a 100MB
 
 ## Requirements *(mandatory)*
@@ -116,16 +122,17 @@ verificar que uma exceção descritiva é lançada.
 - **FR-002**: Sistema DEVE retornar uma estrutura de dados tabular com
   os dados do CSV
 - **FR-003**: Sistema DEVE inferir tipos de dados automaticamente
-  (numérico, texto, data) por padrão
+  (numérico, texto, booleano, data) por padrão
 - **FR-004**: Sistema DEVE aceitar parâmetro opcional de delimitador
-  (padrão: vírgula)
+  (padrão: vírgula, aceita apenas 1 caractere)
 - **FR-005**: Sistema DEVE aceitar parâmetro opcional de encoding
-  (padrão: UTF-8)
+  (padrão: UTF-8). BOM (Byte Order Mark) é ignorado automaticamente.
 - **FR-006**: Sistema DEVE aceitar parâmetro opcional para especificar
   tipos de coluna
 - **FR-007**: Sistema DEVE lançar `FileNotFoundError` se o arquivo não
   existir
 - **FR-008**: Sistema DEVE lançar erro descritivo se o CSV estiver vazio
+  (arquivo de 0 bytes ou apenas com cabeçalho sem linhas de dados)
 - **FR-009**: Sistema DEVE lançar erro descritivo se o CSV for
   malformado (linhas com número inconsistente de colunas)
 - **FR-010**: Sistema DEVE rejeitar arquivos maiores que 100MB com
@@ -170,6 +177,8 @@ verificar que uma exceção descritiva é lançada.
 - Delimitador padrão é vírgula (`,`)
 - Encoding padrão é UTF-8
 - Valores nulos no CSV são interpretados como `NaN` pelo Pandas
+- Espaços em branco (whitespace) no início/fim de colunas e valores são
+  removidos automaticamente (trim automático)
 - TDD obrigatório conforme Constituição (Princípio III: TDD — Testes de
   Dados Obrigatórios): o teste deve ser escrito antes da implementação
 - Arquivos maiores que 100MB são rejeitados (clarificação: opção A)
