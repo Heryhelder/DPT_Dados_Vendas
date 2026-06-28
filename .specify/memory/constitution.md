@@ -1,50 +1,163 @@
-# [PROJECT_NAME] Constitution
-<!-- Example: Spec Constitution, TaskFlow Constitution, etc. -->
+<!--
+  Sync Impact Report
+  Version change: 1.0.0 → 1.1.0
+  Modified principles:
+    III. Testes de Dados Obrigatórios → III. TDD — Testes de Dados Obrigatórios
+  Added sections:
+    - Processo de Emendas (governance, reinstated)
+    - Política de Versionamento (governance, reinstated)
+    - Etapa TDD no Fluxo de Desenvolvimento
+    - GATE 0: TDD Compliance
+  Removed sections: none
+  Templates requiring updates:
+    ✅ .specify/templates/plan-template.md
+    ✅ .specify/templates/spec-template.md
+    ⚠ .specify/templates/tasks-template.md (test tasks now mandatory per constitution)
+  Follow-up TODOs: none
+-->
+
+# DPT - Dados_Vendas Constitution
 
 ## Core Principles
 
-### [PRINCIPLE_1_NAME]
-<!-- Example: I. Library-First -->
-[PRINCIPLE_1_DESCRIPTION]
-<!-- Example: Every feature starts as a standalone library; Libraries must be self-contained, independently testable, documented; Clear purpose required - no organizational-only libraries -->
+### I. Simplicidade como Padrão (KISS + YAGNI)
 
-### [PRINCIPLE_2_NAME]
-<!-- Example: II. CLI Interface -->
-[PRINCIPLE_2_DESCRIPTION]
-<!-- Example: Every library exposes functionality via CLI; Text in/out protocol: stdin/args → stdout, errors → stderr; Support JSON + human-readable formats -->
+Toda solução DEVE começar pela abordagem mais simples que atenda aos
+requisitos. Nenhuma abstração, framework ou camada extra DEVE ser
+introduzida sem necessidade imediata comprovada. Código, estrutura de
+dados e pipeline DEVEM ser eliminados quando não mais agregam valor.
 
-### [PRINCIPLE_3_NAME]
-<!-- Example: III. Test-First (NON-NEGOTIABLE) -->
-[PRINCIPLE_3_DESCRIPTION]
-<!-- Example: TDD mandatory: Tests written → User approved → Tests fail → Then implement; Red-Green-Refactor cycle strictly enforced -->
+**Rationale**: Projetos de dados acumulam complexidade acidental
+rapidamente. Manter simplicidade reduz custos de manutenção, facilita
+auditoria e permite que qualquer membro da equipe entenda o fluxo
+completo sem documentação extensa.
 
-### [PRINCIPLE_4_NAME]
-<!-- Example: IV. Integration Testing -->
-[PRINCIPLE_4_DESCRIPTION]
-<!-- Example: Focus areas requiring integration tests: New library contract tests, Contract changes, Inter-service communication, Shared schemas -->
+### II. Qualidade e Consistência de Código (DRY)
 
-### [PRINCIPLE_5_NAME]
-<!-- Example: V. Observability, VI. Versioning & Breaking Changes, VII. Simplicity -->
-[PRINCIPLE_5_DESCRIPTION]
-<!-- Example: Text I/O ensures debuggability; Structured logging required; Or: MAJOR.MINOR.BUILD format; Or: Start simple, YAGNI principles -->
+Lógica de transformação NÃO DEVE ser duplicada em múltiplos pontos do
+pipeline. Type hints SÃO OBRIGATÓRIOS em todo código Python. O linter
+(ruff) DEVE ser executado antes de cada commit. Nomes de colunas,
+funções e variáveis DEVEM seguir um padrão consistente (snake_case).
 
-## [SECTION_2_NAME]
-<!-- Example: Additional Constraints, Security Requirements, Performance Standards, etc. -->
+**Rationale**: Duplicação é a principal fonte de divergência entre
+dados reportados. Tipagem explícita previne erros silenciosos em
+transformações de dados. Linting automatizado garante que o código
+permaneça legível e consistente ao longo do tempo.
 
-[SECTION_2_CONTENT]
-<!-- Example: Technology stack requirements, compliance standards, deployment policies, etc. -->
+### III. TDD — Testes de Dados Obrigatórios
 
-## [SECTION_3_NAME]
-<!-- Example: Development Workflow, Review Process, Quality Gates, etc. -->
+Toda transformação no pipeline ETL DEVE seguir o ciclo TDD (Test-Driven
+Development):
+1. **Red**: Escrever o teste antes da implementação — o teste DEVE
+   falhar inicialmente
+2. **Green**: Implementar a transformação mínima para passar o teste
+3. **Refactor**: Melhorar o código sem quebrar o teste
 
-[SECTION_3_CONTENT]
-<!-- Example: Code review requirements, testing gates, deployment approval process, etc. -->
+Testes DEVEM seguir a abordagem de "golden data": entrada conhecida →
+saída esperada conhecida. Cada estágio do pipeline (extração,
+validação, preparação, métricas) DEVE ser testável de forma
+independente. Testes SÃO EXIGIDOS em toda feature — não são opcionais.
+
+**Rationale**: O ciclo TDD garante que todo código de transformação
+seja escrito exclusivamente para atender a um comportamento
+verificável. Isso elimina código não testado, revela suposições
+incorretas sobre os dados antes da implementação e documenta o
+comportamento esperado de cada transformação.
+
+### IV. Pipeline Reproduzível e Determinístico
+
+O ETL DEVE produzir os mesmos resultados quando executado com os mesmos
+dados de entrada. TODAS as operações com componente aleatório DEVEM
+usar seed fixa. Scripts SQL no DuckDB SÃO a fonte única de verdade
+para regras de negócio. O pipeline DEVE ser executável de ponta a
+ponta com um único comando.
+
+**Rationale**: Reproducibilidade é fundamental para auditoria,
+depuração e confiança nos dados. Se duas execuções produzem resultados
+diferentes, o pipeline não pode ser verificado nem auditado.
+
+### V. Documentação e Observabilidade
+
+Toda métrica de negócio DEVE ter definição explícita (fórmula, escopo,
+exclusões). Transformações relevantes DEVEM ser comentadas no código
+ou em documentação adjacente. A linhagem dos dados (origem →
+transformação → dashboard) DEVE ser rastreável. Logs estruturados DEVEM
+ser usados para diagnóstico de falhas.
+
+**Rationale**: Sem documentação, métricas perdem significado quando a
+pessoa que as criou não está mais no projeto. Rastreabilidade permite
+identificar rapidamente a causa de discrepâncias em relatórios.
+
+## Technology Stack & Constraints
+
+### Stack Obrigatória
+
+- **Linguagem**: Python 3.14
+- **Manipulação de Dados**: Pandas >= 2.2, < 3
+- **Banco Analítico**: DuckDB (SQL)
+- **Visualização**: Tableau
+- **Linter**: ruff
+
+### Constraints
+
+- Versões de dependências DEVEM ser fixadas (sem ranges abertos além
+  dos especificados)
+- Nenhuma dependência externa além das listadas DEVE ser adicionada sem
+  justificativa por escrito
+- O dado bruto (`input.csv`) NUNCA DEVE ser alterado — transformações
+  sempre produzem novas tabelas/arquivos
+- Tabelas e views analíticas DEVEM ser criadas via SQL no DuckDB, não
+  em memória com pandas
+
+## Development Workflow & Quality Gates
+
+### Fluxo de Desenvolvimento
+
+0. **TDD** — Para cada etapa abaixo, escrever o teste antes da
+   implementação (Red → Green → Refactor)
+1. **Extrair** dados brutos do CSV para DataFrame
+2. **Validar** tipos, consistência e integridade
+3. **Preparar** colunas analíticas (mês, ano, trimestre, dimensões)
+4. **Métricas** SQL no DuckDB (faturamento, ticket médio, etc.)
+5. **Exportar** para Tableau
+
+### Quality Gates
+
+- **GATE 0**: Teste escrito e falhando antes de qualquer código de
+  implementação (TDD compliance)
+- **GATE 1**: Linter (ruff) passa sem erros
+- **GATE 2**: Testes de transformação passam
+- **GATE 3**: Validação de dados concluída sem registros rejeitados
+  além do tolerável
+- **GATE 4**: Métricas conferidas com golden data
+- **GATE 5**: Dados exportados para Tableau batem com consulta SQL
+  direta
 
 ## Governance
-<!-- Example: Constitution supersedes all other practices; Amendments require documentation, approval, migration plan -->
 
-[GOVERNANCE_RULES]
-<!-- Example: All PRs/reviews must verify compliance; Complexity must be justified; Use [GUIDANCE_FILE] for runtime development guidance -->
+A constituição substitui todas as práticas anteriores não documentadas.
+Todo PR ou alteração DEVE verificar conformidade com os princípios
+aqui definidos.
 
-**Version**: [CONSTITUTION_VERSION] | **Ratified**: [RATIFICATION_DATE] | **Last Amended**: [LAST_AMENDED_DATE]
-<!-- Example: Version: 2.1.1 | Ratified: 2025-06-13 | Last Amended: 2025-07-16 -->
+### Processo de Emendas
+
+1. Propor alteração via PR com justificativa
+2. Documentar impacto nos princípios existentes
+3. Obter aprovação de ao menos um revisor
+4. Atualizar `LAST_AMENDED_DATE`
+5. Incrementar versão conforme política abaixo
+
+### Política de Versionamento
+
+- **MAJOR**: Remoção ou redefinição de princípio existente
+- **MINOR**: Adição de novo princípio ou seção, ou expansão material
+  de orientação existente
+- **PATCH**: Esclarecimentos, correções de redação, ajustes não
+  semânticos
+
+### Revisão de Conformidade
+
+Toda feature spec DEVE incluir uma seção "Constitution Check"
+verificando aderência. O plan template já inclui este gate.
+
+**Version**: 1.1.0 | **Ratified**: 2026-06-28 | **Last Amended**: 2026-06-28
