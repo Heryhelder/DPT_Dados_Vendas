@@ -16,7 +16,7 @@ e tratar erros de forma clara (arquivo ausente, vazio, malformado).
 
 **Language/Version**: Python 3.14
 
-**Primary Dependencies**: Pandas >= 2.2, < 3; ipykernel >= 7.2.0; DuckDB
+**Primary Dependencies**: Pandas >= 2.2, < 3; ipykernel >= 7.2.0
 
 **Storage**: DuckDB (dados analíticos persistidos para Tableau); CSV
 bruto mantido inalterado no sistema de arquivos
