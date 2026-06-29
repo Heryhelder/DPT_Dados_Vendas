@@ -1,4 +1,5 @@
 import logging
+import time
 from os import PathLike
 from pathlib import Path
 
@@ -53,7 +54,12 @@ def extract_csv(
     if file_size == 0:
         raise ValueError(f"CSV vazio: {path}")
 
+    _start = time.perf_counter()
+
     raw_encoding = "utf-8-sig" if encoding == "utf-8" else encoding
+    # BOM stripping is automatic for UTF-8 via utf-8-sig.
+    # Non-UTF-8 encodings with BOM are not handled — callers should
+    # strip the BOM upstream for non-UTF-8 files.
 
     _validate_columns(path, delimiter, raw_encoding)
 
@@ -78,11 +84,13 @@ def extract_csv(
             except (ValueError, TypeError):
                 pass
 
+    elapsed = time.perf_counter() - _start
     logger.info(
-        "Extração concluída | path=%s linhas=%d colunas=%d",
-        path.name,
+        "Extração concluída | path=%s linhas=%d colunas=%d duração=%.2fs",
+        str(path),
         len(df),
         len(df.columns),
+        elapsed,
     )
 
     return df
