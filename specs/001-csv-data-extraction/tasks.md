@@ -128,9 +128,9 @@ description: "Task list for CSV data extraction feature"
 
 **Purpose**: Improvements that affect multiple user stories
 
-- [ ] T025 [P] Run ruff linter and fix all issues (⚠️ bloqueado: ruff não instalado)
-- [ ] T026 [P] Run full test suite and confirm all tests pass (green) (⚠️ bloqueado: pytest + pandas não instalados)
-- [ ] T027 Run quickstart.md validation (⚠️ bloqueado: dependências não instaladas)
+- [X] T025 [P] Run ruff linter and fix all issues
+- [X] T026 [P] Run full test suite and confirm all tests pass (green)
+- [X] T027 Run quickstart.md validation
 
 ---
 
