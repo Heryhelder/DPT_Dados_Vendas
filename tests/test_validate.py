@@ -152,7 +152,35 @@ class TestUS1MonetaryStandardization:
         assert result["unit_price"].iloc[0] == 99.99
 
 
+class TestUS1MonetaryNaNRejection:
+    def test_unparseable_monetary_is_rejected(self, valid_row):
+        df = pd.DataFrame([
+            {**valid_row, "operating_expenses": "R$ 5.000,00"},
+        ])
+        result = validate_sales(df)
+        assert len(result) == 0
+
+    def test_nan_in_monetary_column_is_rejected(self, valid_row):
+        import numpy as np
+        df = pd.DataFrame([
+            {**valid_row, "cash_balance": np.nan},
+        ])
+        df["cash_balance"] = df["cash_balance"].astype(object)
+        result = validate_sales(df)
+        assert len(result) == 0
+
+
 class TestUS1TextCleaning:
+    def test_customer_id_whitespace_trimmed(self, valid_row):
+        df = pd.DataFrame([{**valid_row, "customer_id": "  C001  "}])
+        result = validate_sales(df)
+        assert result["customer_id"].iloc[0] == "C001"
+
+    def test_product_id_whitespace_trimmed(self, valid_row):
+        df = pd.DataFrame([{**valid_row, "product_id": "  P001  "}])
+        result = validate_sales(df)
+        assert result["product_id"].iloc[0] == "P001"
+
     def test_whitespace_trimmed(self, valid_row):
         df = pd.DataFrame([{**valid_row, "customer_name": "  João  Silva  "}])
         result = validate_sales(df)

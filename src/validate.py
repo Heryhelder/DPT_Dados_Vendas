@@ -13,6 +13,8 @@ MONETARY_COLUMNS = [
     "monthly_burn",
 ]
 TEXT_COLUMNS = [
+    "customer_id",
+    "product_id",
     "customer_name",
     "product_name",
     "category",
@@ -117,6 +119,7 @@ def _standardize_monetary(df: pd.DataFrame) -> pd.DataFrame:
     """Garante que colunas monetárias sejam float64 com 2 casas decimais."""
     for col in MONETARY_COLUMNS:
         df[col] = pd.to_numeric(df[col], errors="coerce").round(2)
+    df = df.dropna(subset=MONETARY_COLUMNS)
     return df
 
 

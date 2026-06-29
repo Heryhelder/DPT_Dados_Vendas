@@ -222,3 +222,10 @@ With multiple developers:
 - Ruff linter must pass (Constitution GATE 1)
 - All tests must pass (Constitution GATE 2)
 - Implementation follows Python + Pandas; validations as private methods per plan
+
+---
+
+## Phase 7: Convergence
+
+- [X] T032 Reject rows with NaN in monetary columns after standardization per FR-002 (partial)
+- [X] T033 Include customer_id and product_id in text cleaning scope per FR-003 (partial)
