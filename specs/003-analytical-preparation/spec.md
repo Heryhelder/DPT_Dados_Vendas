@@ -74,9 +74,9 @@ As a data consumer, I want the final table to be optimized for filtering and com
 
 ### Functional Requirements
 
-- **FR-001**: System MUST create a "month" column extracting month number (1-12) from order_date
-- **FR-002**: System MUST create a "year" column extracting 4-digit year from order_date
-- **FR-003**: System MUST create a "quarter" column extracting calendar quarter (Q1=Jan-Mar through Q4=Oct-Dec) from order_date
+- **FR-001**: System MUST create a "month" column (float64) extracting month number (1-12) from order_date
+- **FR-002**: System MUST create a "year" column (float64) extracting 4-digit year from order_date
+- **FR-003**: System MUST create a "quarter" column (float64) extracting calendar quarter (Q1=Jan-Mar through Q4=Oct-Dec) from order_date
 - **FR-004**: System MUST preserve the original order_date column unchanged
 - **FR-005**: System MUST standardize region values to title case (trim whitespace, normalize casing)
 - **FR-006**: System MUST standardize sales_rep values to title case
@@ -115,6 +115,7 @@ As a data consumer, I want the final table to be optimized for filtering and com
 - Q: Should quarter use calendar year or fiscal year? → A: Calendar year: Q1=Jan-Mar, Q2=Apr-Jun, Q3=Jul-Sep, Q4=Oct-Dec
 - Q: Should the function return a new DataFrame or modify input in place? → A: Return a new DataFrame (input unchanged)
 - Q: Which statistics should be logged? → A: Rows processed, columns added, dimensions standardized, NULL dates count
+- Q: What data type should the time columns (month, year, quarter) use? → A: float64 (supports NaN for invalid dates)
 
 ## Assumptions
 

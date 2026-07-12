@@ -32,5 +32,5 @@
 ## Notes
 
 - All items pass validation
-- Spec has been clarified with 5 decisions integrated
+- Spec has been clarified with 6 decisions integrated (including float64 type for time columns)
 - Spec is ready for `/speckit.plan`
