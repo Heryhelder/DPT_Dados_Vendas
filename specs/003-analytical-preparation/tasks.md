@@ -17,9 +17,9 @@
 
 **GATE 0**: Must verify red-green baseline before any implementation
 
-- [ ] T001 [US1] Verify existing tests pass in `tests/test_validate.py` (`pytest tests/test_validate.py`)
-- [ ] T002 [US1] [P] Verify `src/prepare.py` does not exist or remove if present (`rm src/prepare.py 2>/dev/null`)
-- [ ] T003 [US1] [P] Create empty test file `tests/test_prepare.py` with initial imports (`import pandas as pd`)
+- [X] T001 [US1] Verify existing tests pass in `tests/test_validate.py` (`pytest tests/test_validate.py`)
+- [X] T002 [US1] [P] Verify `src/prepare.py` does not exist or remove if present (`rm src/prepare.py 2>/dev/null`)
+- [X] T003 [US1] [P] Create empty test file `tests/test_prepare.py` with initial imports (`import pandas as pd`)
 
 **Checkpoint**: Existing pipeline green, src/prepare.py absent, test file empty (red baseline)
 
@@ -33,19 +33,19 @@
 
 ### Tests ⚠️ (MUST write FIRST, verify FAIL before implementation)
 
-- [ ] T004 [P] [US1] Write test: `test_create_month_column` — valid order_date → month (1-12) as float64 in `tests/test_prepare.py`
-- [ ] T005 [P] [US1] Write test: `test_create_year_column` — valid order_date → year (4-digit) as float64 in `tests/test_prepare.py`
-- [ ] T006 [P] [US1] Write test: `test_create_quarter_column` — valid order_date → quarter (1-4) as float64 in `tests/test_prepare.py`
-- [ ] T007 [US1] Write test: `test_order_date_preserved` — order_date column unchanged after prepare in `tests/test_prepare.py`
-- [ ] T008 [US1] Write test: `test_null_date_sets_time_null` — NULL order_date → month/year/quarter = NaN, row preserved in `tests/test_prepare.py`
-- [ ] T009 [US1] Write test: `test_returns_new_dataframe` — input DataFrame not modified in `tests/test_prepare.py`
+- [X] T004 [P] [US1] Write test: `test_create_month_column` — valid order_date → month (1-12) as float64 in `tests/test_prepare.py`
+- [X] T005 [P] [US1] Write test: `test_create_year_column` — valid order_date → year (4-digit) as float64 in `tests/test_prepare.py`
+- [X] T006 [P] [US1] Write test: `test_create_quarter_column` — valid order_date → quarter (1-4) as float64 in `tests/test_prepare.py`
+- [X] T007 [US1] Write test: `test_order_date_preserved` — order_date column unchanged after prepare in `tests/test_prepare.py`
+- [X] T008 [US1] Write test: `test_null_date_sets_time_null` — NULL order_date → month/year/quarter = NaN, row preserved in `tests/test_prepare.py`
+- [X] T009 [US1] Write test: `test_returns_new_dataframe` — input DataFrame not modified in `tests/test_prepare.py`
 
 ### Implementation
 
-- [ ] T010 [US1] Create `prepare_sales()` skeleton in `src/prepare.py` with type hints and docstring
-- [ ] T011 [US1] Implement `_create_time_columns(df)` — extract month/year/quarter as float64 using pandas datetime accessors
-- [ ] T012 [US1] Run `pytest tests/test_prepare.py -k time` — all time column tests pass
-- [ ] T013 [US1] Run `ruff check src/prepare.py tests/test_prepare.py` — lint clean
+- [X] T010 [US1] Create `prepare_sales()` skeleton in `src/prepare.py` with type hints and docstring
+- [X] T011 [US1] Implement `_create_time_columns(df)` — extract month/year/quarter as float64 using pandas datetime accessors
+- [X] T012 [US1] Run `pytest tests/test_prepare.py -k time` — all time column tests pass
+- [X] T013 [US1] Run `ruff check src/prepare.py tests/test_prepare.py` — lint clean
 
 **Checkpoint**: Time columns created correctly, 6 tests passing, lint clean
 
@@ -59,20 +59,20 @@
 
 ### Tests ⚠️ (MUST write FIRST, verify FAIL before implementation)
 
-- [ ] T014 [P] [US2] Write test: `test_standardize_region` — region values → title case, whitespace trimmed in `tests/test_prepare.py`
-- [ ] T015 [P] [US2] Write test: `test_standardize_sales_rep` — sales_rep values → title case in `tests/test_prepare.py`
-- [ ] T016 [P] [US2] Write test: `test_standardize_category` — category values → title case in `tests/test_prepare.py`
-- [ ] T017 [P] [US2] Write test: `test_standardize_sales_channel` — sales_channel values → title case in `tests/test_prepare.py`
-- [ ] T018 [P] [US2] Write test: `test_standardize_customer_type` — customer_type values → title case in `tests/test_prepare.py`
-- [ ] T019 [US2] Write test: `test_null_dimensions_preserved` — NULL values in dimension columns stay NULL in `tests/test_prepare.py`
-- [ ] T020 [US2] Write test: `test_input_not_modified` — input DataFrame dimension columns unchanged in `tests/test_prepare.py`
+- [X] T014 [P] [US2] Write test: `test_standardize_region` — region values → title case, whitespace trimmed in `tests/test_prepare.py`
+- [X] T015 [P] [US2] Write test: `test_standardize_sales_rep` — sales_rep values → title case in `tests/test_prepare.py`
+- [X] T016 [P] [US2] Write test: `test_standardize_category` — category values → title case in `tests/test_prepare.py`
+- [X] T017 [P] [US2] Write test: `test_standardize_sales_channel` — sales_channel values → title case in `tests/test_prepare.py`
+- [X] T018 [P] [US2] Write test: `test_standardize_customer_type` — customer_type values → title case in `tests/test_prepare.py`
+- [X] T019 [US2] Write test: `test_null_dimensions_preserved` — NULL values in dimension columns stay NULL in `tests/test_prepare.py`
+- [X] T020 [US2] Write test: `test_input_not_modified` — input DataFrame dimension columns unchanged in `tests/test_prepare.py`
 
 ### Implementation
 
-- [ ] T021 [US2] Implement `_standardize_dimensions(df)` — title case + strip for all 5 dimension columns in `src/prepare.py`
-- [ ] T022 [US2] Wire `_standardize_dimensions()` into `prepare_sales()` main function
-- [ ] T023 [US2] Run `pytest tests/test_prepare.py -k dimension` — all dimension tests pass
-- [ ] T024 [US2] Run `ruff check src/prepare.py tests/test_prepare.py` — lint clean
+- [X] T021 [US2] Implement `_standardize_dimensions(df)` — title case + strip for all 5 dimension columns in `src/prepare.py`
+- [X] T022 [US2] Wire `_standardize_dimensions()` into `prepare_sales()` main function
+- [X] T023 [US2] Run `pytest tests/test_prepare.py -k dimension` — all dimension tests pass
+- [X] T024 [US2] Run `ruff check src/prepare.py tests/test_prepare.py` — lint clean
 
 **Checkpoint**: Dimensions standardized, 13 tests total passing, lint clean
 
@@ -86,14 +86,14 @@
 
 ### Tests ⚠️ (MUST write FIRST, verify FAIL before implementation)
 
-- [ ] T025 [P] [US3] Write test: `test_filter_by_dimension` — filter by region returns correct subset in `tests/test_prepare.py`
-- [ ] T026 [P] [US3] Write test: `test_groupby_time` — group by month/year/quarter → correct aggregates in `tests/test_prepare.py`
-- [ ] T027 [US3] Write test: `test_cross_dimension_analysis` — region × channel cross-tab produces accurate totals in `tests/test_prepare.py`
+- [X] T025 [P] [US3] Write test: `test_filter_by_dimension` — filter by region returns correct subset in `tests/test_prepare.py`
+- [X] T026 [P] [US3] Write test: `test_groupby_time` — group by month/year/quarter → correct aggregates in `tests/test_prepare.py`
+- [X] T027 [US3] Write test: `test_cross_dimension_analysis` — region × channel cross-tab produces accurate totals in `tests/test_prepare.py`
 
 ### Implementation
 
-- [ ] T028 [US3] Run `pytest tests/test_prepare.py` — all 20+ tests pass
-- [ ] T029 [US3] Run `ruff check src/prepare.py tests/test_prepare.py` — lint clean
+- [X] T028 [US3] Run `pytest tests/test_prepare.py` — all 20+ tests pass
+- [X] T029 [US3] Run `ruff check src/prepare.py tests/test_prepare.py` — lint clean
 
 **Checkpoint**: All user stories independently testable, 20+ tests passing
 
@@ -105,10 +105,10 @@
 
 ### Implementation
 
-- [ ] T030 [US3] Add logging in `prepare_sales()` — rows processed, columns added, dimensions standardized, NULL dates count using `logging` module with key=value format in `src/prepare.py`
-- [ ] T031 [US3] Write test: `test_logging_stats` — verify log output contains expected stats in `tests/test_prepare.py`
-- [ ] T032 [US3] Run `pytest tests/test_prepare.py -v` — full test suite passing
-- [ ] T033 [US3] Run `ruff check src/prepare.py tests/test_prepare.py tests/test_validate.py` — all lint clean
+- [X] T030 [US3] Add logging in `prepare_sales()` — rows processed, columns added, dimensions standardized, NULL dates count using `logging` module with key=value format in `src/prepare.py`
+- [X] T031 [US3] Write test: `test_logging_stats` — verify log output contains expected stats in `tests/test_prepare.py`
+- [X] T032 [US3] Run `pytest tests/test_prepare.py -v` — full test suite passing
+- [X] T033 [US3] Run `ruff check src/prepare.py tests/test_prepare.py tests/test_validate.py` — all lint clean
 
 **Checkpoint**: Production-ready, fully tested, lint clean
 
@@ -118,11 +118,11 @@
 
 **Goal**: Verify against quickstart.md scenarios
 
-- [ ] T034 [US3] Run quickstart.md validation scenario 1: time columns correct for sample dates
-- [ ] T035 [US3] Run quickstart.md validation scenario 2: NULL dates handled correctly
-- [ ] T036 [US3] Run quickstart.md validation scenario 3: dimensions title-cased
-- [ ] T037 [US3] Run `pytest tests/` — full test suite passes (no regressions in extract/validate)
-- [ ] T038 [US3] Run `ruff check src/` — all lint clean
+- [X] T034 [US3] Run quickstart.md validation scenario 1: time columns correct for sample dates
+- [X] T035 [US3] Run quickstart.md validation scenario 2: NULL dates handled correctly
+- [X] T036 [US3] Run quickstart.md validation scenario 3: dimensions title-cased
+- [X] T037 [US3] Run `pytest tests/` — full test suite passes (no regressions in extract/validate)
+- [X] T038 [US3] Run `ruff check src/` — all lint clean
 
 **Checkpoint**: Feature complete, all tests green, ready for review
 
