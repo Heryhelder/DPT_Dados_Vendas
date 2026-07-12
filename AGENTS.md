@@ -1,5 +1,5 @@
 <!-- SPECKIT START -->
 For additional context about technologies to be used, project structure,
 shell commands, and other important information, read the current plan at
-specs/002-data-validation/plan.md
+specs/003-analytical-preparation/plan.md
 <!-- SPECKIT END -->
