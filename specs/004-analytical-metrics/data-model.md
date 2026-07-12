@@ -80,7 +80,7 @@ Summary statistics computed by `aggregate_metrics()`:
 | Metric | Formula | Grouping |
 |--------|---------|----------|
 | total_revenue | sum(net_revenue) | Any dimension combination |
-| avg_ticket | mean(net_revenue per order_id) | Any dimension combination |
+| avg_ticket | mean(net_revenue per order_id) — average revenue per order | Any dimension combination |
 | total_quantity | sum(quantity) | Any dimension combination |
 | avg_discount | mean(discount_pct) | Any dimension combination |
 

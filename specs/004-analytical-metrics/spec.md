@@ -40,6 +40,7 @@ As a business analyst, I want the system to produce aggregated metrics (total re
 
 1. **Given** a DataFrame with net_revenue values, **When** total revenue is computed, **Then** total_revenue = sum(net_revenue) for the given scope
 2. **Given** a DataFrame with net_revenue and order_id, **When** average ticket is computed, **Then** avg_ticket = mean(net_revenue per order)
+   > **Note**: "avg_ticket" is defined as mean(net_revenue per order_id), i.e., average revenue per order.
 3. **Given** a DataFrame with quantity values, **When** total quantity sold is computed, **Then** total_quantity = sum(quantity)
 4. **Given** a DataFrame with discount_pct values, **When** average discount is computed, **Then** avg_discount = mean(discount_pct)
 5. **Given** a grouping dimension (e.g., region), **When** aggregated metrics are computed per group, **Then** each group has its own set of aggregated metrics
@@ -83,9 +84,9 @@ As a business analyst, I want the system to optionally calculate EBITDA, net inc
 
 ### Edge Cases
 
-- What happens when quantity or unit_price is NULL or zero? → gross_revenue = 0 or NaN; downstream metrics propagate NaN
+- What happens when quantity or unit_price is NULL or zero? → gross_revenue = NaN; downstream metrics propagate NaN
 - What happens when sub_category has no COGS rule defined? → cost_of_goods_sold = NaN, gross_profit = NaN for that row
-- What happens when discount_pct is NULL? → net_revenue = gross_revenue (no discount applied)
+- What happens when discount_pct is NULL? → net_revenue = NaN (discount_pct NULL propagates per FR-014)
 - What happens when the DataFrame has zero rows after filtering? → Aggregated metrics return empty results; no errors thrown
 - What happens when all transactions belong to a single customer? → customer recurrence rate = 0% (no repeat customers)
 - What happens when COGS rule dictionary is empty? → All cost_of_goods_sold values = NaN
@@ -106,8 +107,8 @@ As a business analyst, I want the system to optionally calculate EBITDA, net inc
 - **FR-010**: System MUST analyze customer recurrence using customer_id (identify repeat customers, compute recurrence rate)
 - **FR-011**: System MUST optionally compute `ebitda` = `gross_profit` - `operating_expenses` when gross_profit is available
 - **FR-012**: System MUST optionally compute `net_income` from EBITDA and tax rate (default tax_rate=0.0)
-- **FR-013**: System MUST support cross-dimensional performance comparisons (e.g., region × channel)
-- **FR-014**: When input values are NULL or zero, System MUST propagate NaN through derived calculations (no silent defaults)
+- **FR-013**: System MUST support cross-dimensional performance comparisons via aggregation with multiple grouping dimensions (e.g., region × channel). Cross-dimensional comparison is achieved by calling aggregate_metrics() with multiple group_by columns.
+- **FR-014**: When input values are NULL or zero, System MUST propagate NaN through all derived calculations (no silent defaults, no zero-substitution)
 - **FR-015**: System MUST log computation statistics: rows processed, columns added, NaN counts per derived column
 - **FR-016**: System MUST accept a configurable COGS rules dictionary (sub_category → cost percentage) as input parameter
 - **FR-017**: System MUST return a new DataFrame; input DataFrame MUST remain unchanged (immutability)
@@ -139,6 +140,7 @@ As a business analyst, I want the system to optionally calculate EBITDA, net inc
 - Input data has already been validated and prepared (Stage 3 complete, 28 columns from `prepare_sales`)
 - COGS rules are provided as a dictionary; default rules: Smartphones=0.65, Laptops=0.70, Audio=0.55, Peripherals=0.50, Tablets=0.60
 - cost_percentage in COGS rules is expressed as a decimal (0-1), not a percentage
+- COGS rule dictionary keys are case-sensitive and must match the title-cased sub_category values produced by prepare_sales (e.g., "Smartphones", not "smartphones")
 - Optional metrics (EBITDA, net_income) require operating_expenses column which is already present in the input data
 - tax_rate for net_income computation is a constant parameter (default 0.0 — no tax applied unless overridden)
 - customer_id is present in input data for recurrence analysis
