@@ -69,6 +69,15 @@ Essas tecnologias foram utilizadas para:
 - A partir das novas colunas criadas pode ser calculado, ebitda, net_income, avg_ticket, realizar comparações de desempenho,  entre outras métricas de negócio.
 - Utilizar customer_id para verificação de recorrência.
 
+## Modelagem e criação de tabelas e views
+
+### 1. Criação de tabelas e views:
+
+* Criar tabelas para armazenar os dados analíticos tratados e modelados.
+* Criar views para facilitar a consulta aos dados.
+* Utilizar a linguagem SQL para criar tabelas e views.
+* Salvar os dados no DuckDB.
+
 ## Dashboard no Tableau
 
 * Salvar os dados tratados e levar para tableau.
