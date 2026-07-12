@@ -65,7 +65,7 @@ specs/003-analytical-preparation/
 ├── quickstart.md        # Phase 1 output
 ├── contracts/           # Phase 1 output
 │   └── prepare-sales.md
-└── tasks.md             # Phase 2 output (/speckit.tasks)
+└── tasks.md             # Phase 2 output (/speckit.tasks) — Generated 2026-07-12
 ```
 
 ### Source Code (repository root)
