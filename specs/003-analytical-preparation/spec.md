@@ -65,7 +65,7 @@ As a data consumer, I want the final table to be optimized for filtering and com
 
 ### Edge Cases
 
-- When order_date is NULL or invalid, month/year/quarter columns are set to NULL (row is preserved)
+- When order_date is NULL or invalid, month/year/quarter columns are set to NaN (row is preserved)
 - When dimension columns contain NULL values, they are preserved as-is
 - When dimension columns contain unexpected values (e.g., typos), they are preserved (no fuzzy matching)
 - Dimension values with special characters or accents are preserved as-is (no normalization beyond casing/whitespace)
@@ -79,12 +79,12 @@ As a data consumer, I want the final table to be optimized for filtering and com
 - **FR-003**: System MUST create a "quarter" column (float64) extracting calendar quarter (Q1=Jan-Mar through Q4=Oct-Dec) from order_date
 - **FR-004**: System MUST preserve the original order_date column unchanged
 - **FR-005**: System MUST standardize region values to title case (trim whitespace, normalize casing)
-- **FR-006**: System MUST standardize sales_rep values to title case
-- **FR-007**: System MUST standardize category values to title case
-- **FR-008**: System MUST standardize sales_channel values to title case
-- **FR-009**: System MUST standardize customer_type values to title case
-- **FR-010**: When order_date is NULL or invalid, System MUST set month, year, and quarter columns to NULL (row preserved)
-- **FR-011**: System MUST handle NULL/missing values in dimension columns gracefully (preserve NULLs)
+- **FR-006**: System MUST standardize sales_rep values to title case (trim whitespace, normalize casing)
+- **FR-007**: System MUST standardize category values to title case (trim whitespace, normalize casing)
+- **FR-008**: System MUST standardize sales_channel values to title case (trim whitespace, normalize casing)
+- **FR-009**: System MUST standardize customer_type values to title case (trim whitespace, normalize casing)
+- **FR-010**: When order_date is NULL or invalid, System MUST set month, year, and quarter columns to NaN (row preserved)
+- **FR-011**: System MUST handle NULL/missing values in dimension columns gracefully (preserve NaN/None)
 - **FR-012**: System MUST return a new DataFrame with all existing columns preserved (input DataFrame unchanged)
 - **FR-013**: System MUST log transformation statistics: rows processed, columns added, dimensions standardized count, and NULL dates count
 

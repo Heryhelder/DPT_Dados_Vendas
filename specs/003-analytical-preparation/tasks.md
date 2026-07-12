@@ -92,9 +92,8 @@
 
 ### Implementation
 
-- [ ] T028 [US3] Implement `_compute_quarter()` helper if not already complete — ensure calendar quarter logic correct in `src/prepare.py`
-- [ ] T029 [US3] Run `pytest tests/test_prepare.py` — all 20+ tests pass
-- [ ] T030 [US3] Run `ruff check src/prepare.py tests/test_prepare.py` — lint clean
+- [ ] T028 [US3] Run `pytest tests/test_prepare.py` — all 20+ tests pass
+- [ ] T029 [US3] Run `ruff check src/prepare.py tests/test_prepare.py` — lint clean
 
 **Checkpoint**: All user stories independently testable, 20+ tests passing
 
@@ -106,10 +105,10 @@
 
 ### Implementation
 
-- [ ] T031 [US3] Add logging in `prepare_sales()` — rows processed, columns added, dimensions standardized, NULL dates count using `logging` module with key=value format in `src/prepare.py`
-- [ ] T032 [US3] Write test: `test_logging_stats` — verify log output contains expected stats in `tests/test_prepare.py`
-- [ ] T033 [US3] Run `pytest tests/test_prepare.py -v` — full test suite passing
-- [ ] T034 [US3] Run `ruff check src/prepare.py tests/test_prepare.py tests/test_validate.py` — all lint clean
+- [ ] T030 [US3] Add logging in `prepare_sales()` — rows processed, columns added, dimensions standardized, NULL dates count using `logging` module with key=value format in `src/prepare.py`
+- [ ] T031 [US3] Write test: `test_logging_stats` — verify log output contains expected stats in `tests/test_prepare.py`
+- [ ] T032 [US3] Run `pytest tests/test_prepare.py -v` — full test suite passing
+- [ ] T033 [US3] Run `ruff check src/prepare.py tests/test_prepare.py tests/test_validate.py` — all lint clean
 
 **Checkpoint**: Production-ready, fully tested, lint clean
 
@@ -119,11 +118,11 @@
 
 **Goal**: Verify against quickstart.md scenarios
 
-- [ ] T035 [US3] Run quickstart.md validation scenario 1: time columns correct for sample dates
-- [ ] T036 [US3] Run quickstart.md validation scenario 2: NULL dates handled correctly
-- [ ] T037 [US3] Run quickstart.md validation scenario 3: dimensions title-cased
-- [ ] T038 [US3] Run `pytest tests/` — full test suite passes (no regressions in extract/validate)
-- [ ] T039 [US3] Run `ruff check src/` — all lint clean
+- [ ] T034 [US3] Run quickstart.md validation scenario 1: time columns correct for sample dates
+- [ ] T035 [US3] Run quickstart.md validation scenario 2: NULL dates handled correctly
+- [ ] T036 [US3] Run quickstart.md validation scenario 3: dimensions title-cased
+- [ ] T037 [US3] Run `pytest tests/` — full test suite passes (no regressions in extract/validate)
+- [ ] T038 [US3] Run `ruff check src/` — all lint clean
 
 **Checkpoint**: Feature complete, all tests green, ready for review
 
@@ -132,24 +131,24 @@
 ## Dependency Map
 
 ```
-Phase 1: T001 → T002 → T003
+Phase 1: T001 → (T002 ∥ T003)
                   ↓
 Phase 2: T004-T006 (parallel) → T007-T009 (sequential) → T010-T013
                   ↓
 Phase 3: T014-T018 (parallel) → T019-T020 → T021-T024
                   ↓
-Phase 4: T025-T026 (parallel) → T027 → T028-T030
+Phase 4: T025-T026 (parallel) → T027 → T028-T029
                   ↓
-Phase 5: T031-T034 (sequential)
+Phase 5: T030-T033 (sequential)
                   ↓
-Phase 6: T035-T039 (sequential final validation)
+Phase 6: T034-T038 (sequential final validation)
 ```
 
 ## Parallel Execution Guide
 
 ```
 # Phase 1: Sequential (clean slate)
-T001 → T002 → T003
+T001 → (T002 ∥ T003)
 
 # Phase 2 tests: 3 parallel
 Task: T004 test_create_month_column
