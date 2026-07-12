@@ -16,8 +16,8 @@
 
 **Purpose**: Module initialization and shared constants
 
-- [ ] T001 [P] Create src/analyze.py with module docstring, imports, and logger setup in src/analyze.py
-- [ ] T002 [P] Define DEFAULT_COGS_RULES constant dict in src/analyze.py
+- [X] T001 [P] Create src/analyze.py with module docstring, imports, and logger setup in src/analyze.py
+- [X] T002 [P] Define DEFAULT_COGS_RULES constant dict in src/analyze.py
 
 ---
 
@@ -27,7 +27,7 @@
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete
 
-- [ ] T003 Create tests/test_analyze.py with test class structure and shared fixtures (minimal DataFrame with all 28 required columns) in tests/test_analyze.py
+- [X] T003 Create tests/test_analyze.py with test class structure and shared fixtures (minimal DataFrame with all 28 required columns) in tests/test_analyze.py
 
 **Checkpoint**: Foundation ready — user story implementation can now begin
 
@@ -41,20 +41,20 @@
 
 ### Tests for User Story 1 (TDD — write FIRST, ensure FAIL)
 
-- [ ] T004 [P] [US1] Write test_gross_revenue_computation in tests/test_analyze.py — verify gross_revenue = quantity * unit_price
-- [ ] T005 [P] [US1] Write test_net_revenue_computation in tests/test_analyze.py — verify net_revenue = gross_revenue * (1 - discount_pct)
-- [ ] T006 [P] [US1] Write test_cogs_computation in tests/test_analyze.py — verify COGS = net_revenue * cost_percentage per sub_category
-- [ ] T007 [P] [US1] Write test_gross_profit_computation in tests/test_analyze.py — verify gross_profit = net_revenue - COGS
-- [ ] T008 [P] [US1] Write test_input_columns_preserved in tests/test_analyze.py — verify all 28 input columns unchanged
-- [ ] T009 [P] [US1] Write test_null_propagation in tests/test_analyze.py — verify NULL inputs propagate NaN through all derived columns
-- [ ] T010 [P] [US1] Write test_empty_dataframe_raises in tests/test_analyze.py — verify ValueError on empty input
-- [ ] T011 [P] [US1] Write test_custom_cogs_rules in tests/test_analyze.py — verify custom COGS dictionary is applied
-- [ ] T012 [P] [US1] Write test_unknown_sub_category_nan in tests/test_analyze.py — verify NaN when sub_category not in rules
+- [X] T004 [P] [US1] Write test_gross_revenue_computation in tests/test_analyze.py — verify gross_revenue = quantity * unit_price
+- [X] T005 [P] [US1] Write test_net_revenue_computation in tests/test_analyze.py — verify net_revenue = gross_revenue * (1 - discount_pct)
+- [X] T006 [P] [US1] Write test_cogs_computation in tests/test_analyze.py — verify COGS = net_revenue * cost_percentage per sub_category
+- [X] T007 [P] [US1] Write test_gross_profit_computation in tests/test_analyze.py — verify gross_profit = net_revenue - COGS
+- [X] T008 [P] [US1] Write test_input_columns_preserved in tests/test_analyze.py — verify all 28 input columns unchanged
+- [X] T009 [P] [US1] Write test_null_propagation in tests/test_analyze.py — verify NULL inputs propagate NaN through all derived columns
+- [X] T010 [P] [US1] Write test_empty_dataframe_raises in tests/test_analyze.py — verify ValueError on empty input
+- [X] T011 [P] [US1] Write test_custom_cogs_rules in tests/test_analyze.py — verify custom COGS dictionary is applied
+- [X] T012 [P] [US1] Write test_unknown_sub_category_nan in tests/test_analyze.py — verify NaN when sub_category not in rules
 
 ### Implementation for User Story 1
 
-- [ ] T013 [US1] Implement _compute_revenue_metrics(df) in src/analyze.py — vectorized computation of gross_revenue, net_revenue, cost_of_goods_sold, gross_profit
-- [ ] T014 [US1] Implement analyze_sales(df, cogs_rules, tax_rate) main function in src/analyze.py — calls _compute_revenue_metrics, returns new DataFrame
+- [X] T013 [US1] Implement _compute_revenue_metrics(df) in src/analyze.py — vectorized computation of gross_revenue, net_revenue, cost_of_goods_sold, gross_profit
+- [X] T014 [US1] Implement analyze_sales(df, cogs_rules, tax_rate) main function in src/analyze.py — calls _compute_revenue_metrics, returns new DataFrame
 
 **Checkpoint**: At this point, User Story 1 should be fully functional and testable independently
 
@@ -68,16 +68,16 @@
 
 ### Tests for User Story 2 (TDD — write FIRST, ensure FAIL)
 
-- [ ] T015 [P] [US2] Write test_aggregate_total_revenue in tests/test_analyze.py — verify total_revenue = sum(net_revenue)
-- [ ] T016 [P] [US2] Write test_aggregate_avg_ticket in tests/test_analyze.py — verify avg_ticket = mean(net_revenue per order)
-- [ ] T017 [P] [US2] Write test_aggregate_total_quantity in tests/test_analyze.py — verify total_quantity = sum(quantity)
-- [ ] T018 [P] [US2] Write test_aggregate_avg_discount in tests/test_analyze.py — verify avg_discount = mean(discount_pct)
-- [ ] T019 [P] [US2] Write test_aggregate_by_dimension in tests/test_analyze.py — verify grouping by region produces per-group metrics
-- [ ] T020 [P] [US2] Write test_aggregate_empty_input in tests/test_analyze.py — verify empty DataFrame returns empty result
+- [X] T015 [P] [US2] Write test_aggregate_total_revenue in tests/test_analyze.py — verify total_revenue = sum(net_revenue)
+- [X] T016 [P] [US2] Write test_aggregate_avg_ticket in tests/test_analyze.py — verify avg_ticket = mean(net_revenue per order)
+- [X] T017 [P] [US2] Write test_aggregate_total_quantity in tests/test_analyze.py — verify total_quantity = sum(quantity)
+- [X] T018 [P] [US2] Write test_aggregate_avg_discount in tests/test_analyze.py — verify avg_discount = mean(discount_pct)
+- [X] T019 [P] [US2] Write test_aggregate_by_dimension in tests/test_analyze.py — verify grouping by region produces per-group metrics
+- [X] T020 [P] [US2] Write test_aggregate_empty_input in tests/test_analyze.py — verify empty DataFrame returns empty result
 
 ### Implementation for User Story 2
 
-- [ ] T021 [US2] Implement aggregate_metrics(df, group_by) in src/analyze.py — groupby + aggregation with total_revenue, avg_ticket, total_quantity, avg_discount
+- [X] T021 [US2] Implement aggregate_metrics(df, group_by) in src/analyze.py — groupby + aggregation with total_revenue, avg_ticket, total_quantity, avg_discount
 
 **Checkpoint**: At this point, User Stories 1 AND 2 should both work independently
 
@@ -91,21 +91,21 @@
 
 ### Tests for User Story 3 (TDD — write FIRST, ensure FAIL)
 
-- [ ] T022 [P] [US3] Write test_seasonality_monthly_totals in tests/test_analyze.py — verify monthly revenue totals per year
-- [ ] T023 [P] [US3] Write test_seasonality_quarterly_totals in tests/test_analyze.py — verify quarterly revenue totals per year
-- [ ] T024 [P] [US3] Write test_top_products_ranking in tests/test_analyze.py — verify products ranked by revenue descending
-- [ ] T025 [P] [US3] Write test_top_categories_ranking in tests/test_analyze.py — verify categories ranked by revenue descending
-- [ ] T026 [P] [US3] Write test_top_products_limit_n in tests/test_analyze.py — verify top_n parameter limits results
-- [ ] T027 [P] [US3] Write test_recurrence_rate in tests/test_analyze.py — verify recurrence = repeat_customers / total_customers
-- [ ] T028 [P] [US3] Write test_recurrence_single_customer in tests/test_analyze.py — verify 0% recurrence when all orders from one customer
-- [ ] T029 [P] [US3] Write test_recurrence_no_customers in tests/test_analyze.py — verify graceful handling when total_customers = 0
+- [X] T022 [P] [US3] Write test_seasonality_monthly_totals in tests/test_analyze.py — verify monthly revenue totals per year
+- [X] T023 [P] [US3] Write test_seasonality_quarterly_totals in tests/test_analyze.py — verify quarterly revenue totals per year
+- [X] T024 [P] [US3] Write test_top_products_ranking in tests/test_analyze.py — verify products ranked by revenue descending
+- [X] T025 [P] [US3] Write test_top_categories_ranking in tests/test_analyze.py — verify categories ranked by revenue descending
+- [X] T026 [P] [US3] Write test_top_products_limit_n in tests/test_analyze.py — verify top_n parameter limits results
+- [X] T027 [P] [US3] Write test_recurrence_rate in tests/test_analyze.py — verify recurrence = repeat_customers / total_customers
+- [X] T028 [P] [US3] Write test_recurrence_single_customer in tests/test_analyze.py — verify 0% recurrence when all orders from one customer
+- [X] T029 [P] [US3] Write test_recurrence_no_customers in tests/test_analyze.py — verify graceful handling when total_customers = 0
 
 ### Implementation for User Story 3
 
-- [ ] T030 [US3] Implement analyze_seasonality(df) in src/analyze.py — returns dict with "monthly" and "quarterly" DataFrames
-- [ ] T031 [US3] Implement top_products(df, n) in src/analyze.py — products ranked by revenue and quantity
-- [ ] T032 [US3] Implement top_categories(df, n) in src/analyze.py — categories ranked by revenue and quantity
-- [ ] T033 [US3] Implement analyze_recurrence(df) in src/analyze.py — returns dict with total_customers, repeat_customers, recurrence_rate
+- [X] T030 [US3] Implement analyze_seasonality(df) in src/analyze.py — returns dict with "monthly" and "quarterly" DataFrames
+- [X] T031 [US3] Implement top_products(df, n) in src/analyze.py — products ranked by revenue and quantity
+- [X] T032 [US3] Implement top_categories(df, n) in src/analyze.py — categories ranked by revenue and quantity
+- [X] T033 [US3] Implement analyze_recurrence(df) in src/analyze.py — returns dict with total_customers, repeat_customers, recurrence_rate
 
 **Checkpoint**: All user stories should now be independently functional
 
@@ -119,15 +119,15 @@
 
 ### Tests for User Story 4 (TDD — write FIRST, ensure FAIL)
 
-- [ ] T034 [P] [US4] Write test_ebitda_computation in tests/test_analyze.py — verify ebitda = gross_profit - operating_expenses
-- [ ] T035 [P] [US4] Write test_net_income_computation in tests/test_analyze.py — verify net_income = ebitda * (1 - tax_rate)
-- [ ] T036 [P] [US4] Write test_optional_metrics_graceful_degradation in tests/test_analyze.py — verify NaN when operating_expenses missing
-- [ ] T037 [P] [US4] Write test_cross_dimensional_comparison in tests/test_analyze.py — verify aggregate_metrics with multiple group_by columns produces correct per-combination metrics (satisfies FR-013)
+- [X] T034 [P] [US4] Write test_ebitda_computation in tests/test_analyze.py — verify ebitda = gross_profit - operating_expenses
+- [X] T035 [P] [US4] Write test_net_income_computation in tests/test_analyze.py — verify net_income = ebitda * (1 - tax_rate)
+- [X] T036 [P] [US4] Write test_optional_metrics_graceful_degradation in tests/test_analyze.py — verify NaN when operating_expenses missing
+- [X] T037 [P] [US4] Write test_cross_dimensional_comparison in tests/test_analyze.py — verify aggregate_metrics with multiple group_by columns produces correct per-combination metrics (satisfies FR-013)
 
 ### Implementation for User Story 4
 
-- [ ] T038 [US4] Implement _compute_optional_metrics(df, tax_rate) in src/analyze.py — compute ebitda and net_income when operating_expenses present
-- [ ] T039 [US4] Update analyze_sales to call _compute_optional_metrics in src/analyze.py — integrate optional metrics into main function
+- [X] T038 [US4] Implement _compute_optional_metrics(df, tax_rate) in src/analyze.py — compute ebitda and net_income when operating_expenses present
+- [X] T039 [US4] Update analyze_sales to call _compute_optional_metrics in src/analyze.py — integrate optional metrics into main function
 
 **Checkpoint**: All user stories complete with optional metrics
 
@@ -137,11 +137,11 @@
 
 **Purpose**: Logging, validation, documentation, and final quality checks
 
-- [ ] T040 Implement logging in analyze_sales in src/analyze.py — log rows_processed, columns_added, nan_counts per derived column (FR-015)
-- [ ] T041 [P] Run quickstart.md validation scenarios in specs/004-analytical-metrics/quickstart.md — verify all 7 scenarios pass
-- [ ] T042 [P] Run ruff lint on src/analyze.py and tests/test_analyze.py — ensure zero errors
-- [ ] T043 [P] Run full test suite pytest tests/ -v — verify all tests pass (existing + new)
-- [ ] T044 [P] Write performance benchmark test in tests/test_analyze.py — verify analyze_sales processes 100,000 rows in under 2 seconds (SC-001)
+- [X] T040 Implement logging in analyze_sales in src/analyze.py — log rows_processed, columns_added, nan_counts per derived column (FR-015)
+- [X] T041 [P] Run quickstart.md validation scenarios in specs/004-analytical-metrics/quickstart.md — verify all 7 scenarios pass
+- [X] T042 [P] Run ruff lint on src/analyze.py and tests/test_analyze.py — ensure zero errors
+- [X] T043 [P] Run full test suite pytest tests/ -v — verify all tests pass (existing + new)
+- [X] T044 [P] Write performance benchmark test in tests/test_analyze.py — verify analyze_sales processes 100,000 rows in under 2 seconds (SC-001)
 
 ---
 
@@ -241,3 +241,72 @@ With multiple developers:
 - Commit after each task or logical group
 - Stop at any checkpoint to validate story independently
 - Total tasks: 44 (T001–T044)
+
+---
+
+## Convergence Assessment (2026-07-12)
+
+### Status: CONVERGED
+
+**Artifacts assessed:** spec.md, plan.md, data-model.md, research.md, contracts/analyze-sales.md, quickstart.md, checklists/requirements.md, checklists/metrics.md, src/analyze.py, tests/test_analyze.py
+
+### Intent Inventory (Requirements)
+
+| Item | Status | Evidence |
+|------|--------|----------|
+| FR-001 gross_revenue = qty × unit_price | ✅ | analyze.py:76, test_gross_revenue_computation |
+| FR-002 net_revenue = gross × (1 - discount) | ✅ | analyze.py:77, test_net_revenue_computation |
+| FR-003 COGS configurable rule dictionary | ✅ | analyze.py:74,79-80, test_custom_cogs_rules |
+| FR-004 gross_profit = net_revenue − COGS | ✅ | analyze.py:82, test_gross_profit_computation |
+| FR-005 Preserve all input columns, return new DF | ✅ | analyze.py:44, test_input_columns_preserved |
+| FR-006 Aggregated metrics (4 metrics) | ✅ | aggregate_metrics(), 5 tests |
+| FR-007 Aggregation by any dimension combination | ✅ | group_by param, test_aggregate_by_dimension |
+| FR-008 Seasonality by month and quarter | ✅ | analyze_seasonality(), 2 tests |
+| FR-009 Top products and categories | ✅ | top_products/top_categories, 3 tests |
+| FR-010 Customer recurrence | ✅ | analyze_recurrence(), 3 tests |
+| FR-011 Optional ebitda | ✅ | _compute_optional_metrics, test_ebitda_computation |
+| FR-012 Optional net_income | ✅ | test_net_income_computation |
+| FR-013 Cross-dimensional comparison | ✅ | test_cross_dimensional_comparison |
+| FR-014 NULL propagation | ✅ | test_null_propagation |
+| FR-015 Log computation statistics | ✅ | test_logging_stats |
+| FR-016 Configurable COGS rules | ✅ | analyze_sales param, test_custom_cogs_rules |
+| FR-017 Immutability (return new DF) | ✅ | test_returns_new_dataframe |
+
+### Acceptance Criteria
+
+| Item | Status | Evidence |
+|------|--------|----------|
+| SC-001 100K rows < 2s | ✅ | test_analyze_sales_100k_rows (6s incl. gen, compute only ~1.4s) |
+| SC-002 Aggregations match manual calc ±1e-6 | ✅ | pytest.approx in all aggregate tests |
+| SC-003 Monthly/quarterly totals correct | ✅ | test_seasonality_monthly_totals, test_seasonality_quarterly_totals |
+| SC-004 Rankings deterministic and correctly sorted | ✅ | test_top_products_ranking, test_top_categories_ranking |
+| SC-005 Recurrence correctly identifies repeat customers | ✅ | test_recurrence_rate (30%) |
+| SC-006 Optional metrics degrade gracefully | ✅ | test_optional_metrics_graceful_degradation |
+| SC-007 Derived columns populated, NULL propagation verified | ✅ | test_null_propagation |
+| SC-008 Transformation is deterministic | ✅ | All pandas operations are pure/deterministic |
+
+### Code-Scope Map
+
+| Scope Item | File | Status |
+|-----------|------|--------|
+| analyze_sales() | src/analyze.py:43-103 | ✅ Implemented |
+| aggregate_metrics() | src/analyze.py:106-176 | ✅ Implemented |
+| analyze_seasonality() | src/analyze.py:179-204 | ✅ Implemented |
+| top_products() | src/analyze.py:207-214 | ✅ Implemented |
+| top_categories() | src/analyze.py:217-225 | ✅ Implemented |
+| analyze_recurrence() | src/analyze.py:228-248 | ✅ Implemented |
+| _compute_revenue_metrics() | src/analyze.py:251-262 | ✅ Implemented |
+| _compute_optional_metrics() | src/analyze.py:265-277 | ✅ Implemented |
+
+### Issues Found
+
+**0 CRITICAL** | **0 MEDIUM** | **0 LOW**
+
+All spec requirements are satisfied by the implementation. No actionable gaps found. Code passes ruff lint with zero warnings. All 30 tests pass.
+
+### Recommendation
+
+Feature 004 is **ready for review**. Suggested next steps:
+1. Open PR for review
+2. Consider adding Feature 004 integration test (full pipeline extract → validate → prepare → analyze)
+3. Plan Feature 005 (DuckDB export) or Feature 006 (Tableau preparation) if applicable
