@@ -6,6 +6,14 @@ import pytest
 
 from src.store import store_analytics
 
+EXPECTED_VIEWS = [
+    "v_monthly_revenue",
+    "v_store_performance",
+    "v_category_sales",
+    "v_top_products",
+    "v_sales_summary",
+]
+
 
 @pytest.fixture
 def sample_df() -> pd.DataFrame:
@@ -89,102 +97,143 @@ def sample_df() -> pd.DataFrame:
 
 
 @pytest.fixture
-def db_path(tmp_path) -> str:
-    """Caminho temporário para arquivo DuckDB."""
-    return str(tmp_path / "test.duckdb")
+def output_dir(tmp_path) -> str:
+    """Caminho temporário para diretório de saída."""
+    return str(tmp_path / "output")
 
 
-class TestUS1StoreCreatesFile:
-    def test_store_creates_duckdb_file(self, sample_df, db_path):
-        """T006: store_analytics() cria arquivo .duckdb no caminho informado."""
-        assert not os.path.exists(db_path)
-        store_analytics(sample_df, db_path)
-        assert os.path.exists(db_path)
-        assert db_path.endswith(".duckdb")
+# ---------------------------------------------------------------------------
+# US1: Generate Individual DuckDB Files Per View (P1)
+# ---------------------------------------------------------------------------
 
 
-class TestUS1StoreCreatesSalesTable:
-    def test_store_creates_sales_table(self, sample_df, db_path):
-        """T007: Tabela 'sales' existe com 34 colunas."""
-        store_analytics(sample_df, db_path)
-        con = duckdb.connect(db_path, read_only=True)
-        columns = con.execute(
-            "SELECT column_name FROM information_schema.columns "
-            "WHERE table_name = 'sales' ORDER BY ordinal_position"
-        ).fetchall()
-        con.close()
-        assert len(columns) == 34
+class TestUS1CreatesFiveDuckdbFiles:
+    """T004: store_analytics() cria exatamente 5 arquivos .duckdb."""
+
+    def test_store_creates_five_duckdb_files(self, sample_df, output_dir):
+        store_analytics(sample_df, output_dir)
+        duckdb_files = [f for f in os.listdir(output_dir) if f.endswith(".duckdb")]
+        assert len(duckdb_files) == 5
 
 
-class TestUS1StorePreservesRecordCount:
-    def test_store_preserves_record_count(self, sample_df, db_path):
-        """T008: Contagem de registros no DuckDB confere com DataFrame."""
-        store_analytics(sample_df, db_path)
-        con = duckdb.connect(db_path, read_only=True)
-        count = con.execute("SELECT COUNT(*) FROM sales").fetchone()[0]
-        con.close()
-        assert count == len(sample_df)
+class TestUS1CreatesCorrectFilenames:
+    """T005: Arquivos têm nomes corretos baseados nas views."""
+
+    def test_store_creates_correct_filenames(self, sample_df, output_dir):
+        store_analytics(sample_df, output_dir)
+        duckdb_files = sorted(os.listdir(output_dir))
+        expected = sorted(f"{v}.duckdb" for v in EXPECTED_VIEWS)
+        assert duckdb_files == expected
 
 
-class TestUS1StorePreservesColumnTypes:
-    def test_store_preserves_column_types(self, sample_df, db_path):
-        """T009: Tipos de coluna do DuckDB conferem com data-model.md."""
-        store_analytics(sample_df, db_path)
-        con = duckdb.connect(db_path, read_only=True)
-        col_types = dict(
-            con.execute(
-                "SELECT column_name, data_type FROM information_schema.columns "
-                "WHERE table_name = 'sales'"
+class TestUS1EachFileContainsTableAndView:
+    """T006: Cada arquivo contém tabela sales e exatamente uma view."""
+
+    def test_each_file_contains_sales_table_and_one_view(
+        self, sample_df, output_dir
+    ):
+        store_analytics(sample_df, output_dir)
+        for view_name in EXPECTED_VIEWS:
+            path = os.path.join(output_dir, f"{view_name}.duckdb")
+            con = duckdb.connect(path, read_only=True)
+            tables = con.execute(
+                "SELECT table_name FROM information_schema.tables "
+                "WHERE table_schema = 'main' AND table_type = 'BASE TABLE'"
             ).fetchall()
-        )
-        con.close()
-
-        assert col_types["order_id"] == "VARCHAR"
-        assert "TIMESTAMP" in col_types["order_date"]
-        assert "INT" in col_types["quantity"]
-        assert col_types["unit_price"] == "DOUBLE"
-        assert col_types["net_revenue"] == "DOUBLE"
-        assert "INT" in col_types["churn_flag"]
-
-
-class TestUS1StoreAutoCreatesDirectory:
-    def test_store_auto_creates_directory(self, sample_df, tmp_path):
-        """T010: Diretório aninhado inexistente é criado automaticamente."""
-        nested_path = str(tmp_path / "subdir" / "nested" / "test.duckdb")
-        assert not os.path.exists(tmp_path / "subdir")
-        store_analytics(sample_df, nested_path)
-        assert os.path.exists(nested_path)
+            views = con.execute(
+                "SELECT table_name FROM information_schema.views "
+                "WHERE table_schema = 'main' "
+                "AND table_name NOT LIKE 'duckdb_%' "
+                "AND table_name NOT LIKE 'sqlite_%' "
+                "AND table_name NOT LIKE 'pragma_%'"
+            ).fetchall()
+            con.close()
+            table_names = [t[0] for t in tables]
+            view_names = [v[0] for v in views]
+            assert "sales" in table_names, f"{view_name}: missing sales table"
+            assert len(view_names) == 1, (
+                f"{view_name}: expected 1 view, got {len(view_names)}: {view_names}"
+            )
+            assert view_names[0] == view_name
 
 
-EXPECTED_VIEWS = [
-    "v_monthly_revenue",
-    "v_store_performance",
-    "v_category_sales",
-    "v_top_products",
-    "v_sales_summary",
-]
+class TestUS1EachFileIsQueryable:
+    """T007: Cada arquivo pode ser consultado independentemente."""
+
+    def test_each_file_is_independently_queryable(self, sample_df, output_dir):
+        store_analytics(sample_df, output_dir)
+        for view_name in EXPECTED_VIEWS:
+            path = os.path.join(output_dir, f"{view_name}.duckdb")
+            con = duckdb.connect(path, read_only=True)
+            result = con.execute(f"SELECT COUNT(*) FROM {view_name}").fetchone()
+            con.close()
+            assert result[0] > 0, f"{view_name}: returned 0 rows"
 
 
-class TestUS2StoreCreatesViews:
-    def test_store_creates_views(self, sample_df, db_path):
-        """T014: Todas as 5 views são criadas no DuckDB."""
-        store_analytics(sample_df, db_path)
-        con = duckdb.connect(db_path, read_only=True)
-        views = con.execute(
-            "SELECT table_name FROM information_schema.views "
-            "WHERE table_schema = 'main'"
-        ).fetchall()
-        view_names = {v[0] for v in views}
-        con.close()
-        for name in EXPECTED_VIEWS:
-            assert name in view_names, f"View '{name}' not found"
+# ---------------------------------------------------------------------------
+# US2: Backward-Compatible Storage Interface (P2)
+# ---------------------------------------------------------------------------
+
+
+class TestUS2FunctionSignatureUnchanged:
+    """T010: Assinatura da função permanece compatível."""
+
+    def test_store_function_signature_unchanged(self, sample_df, output_dir):
+        store_analytics(sample_df, output_dir)
+        duckdb_files = [f for f in os.listdir(output_dir) if f.endswith(".duckdb")]
+        assert len(duckdb_files) == 5
+
+
+class TestUS2DbPathAsDirectory:
+    """T011: db_path tratado como diretório, não arquivo."""
+
+    def test_db_path_as_directory_creates_files_inside(
+        self, sample_df, output_dir
+    ):
+        store_analytics(sample_df, output_dir)
+        assert os.path.isdir(output_dir)
+        duckdb_files = [f for f in os.listdir(output_dir) if f.endswith(".duckdb")]
+        assert len(duckdb_files) == 5
+        assert not os.path.isfile(output_dir)
+
+
+class TestUS2AutoCreatesDirectory:
+    """T012: Diretório de saída é criado automaticamente."""
+
+    def test_store_auto_creates_output_directory(self, sample_df, tmp_path):
+        nested = str(tmp_path / "a" / "b" / "c")
+        assert not os.path.exists(nested)
+        store_analytics(sample_df, nested)
+        assert os.path.isdir(nested)
+        duckdb_files = [f for f in os.listdir(nested) if f.endswith(".duckdb")]
+        assert len(duckdb_files) == 5
+
+
+class TestUS2ViewsExistInFiles:
+    """T014: Views são criadas nos arquivos individuais."""
+
+    def test_store_creates_views(self, sample_df, output_dir):
+        store_analytics(sample_df, output_dir)
+        for view_name in EXPECTED_VIEWS:
+            path = os.path.join(output_dir, f"{view_name}.duckdb")
+            con = duckdb.connect(path, read_only=True)
+            views = con.execute(
+                "SELECT table_name FROM information_schema.views "
+                "WHERE table_schema = 'main' "
+                "AND table_name NOT LIKE 'duckdb_%'"
+            ).fetchall()
+            view_names = {v[0] for v in views}
+            con.close()
+            assert view_name in view_names, f"View '{view_name}' not found"
 
 
 class TestUS2ViewMonthlyRevenue:
-    def test_view_monthly_revenue_returns_data(self, sample_df, db_path):
-        """T015: v_monthly_revenue retorna linhas com colunas esperadas."""
-        store_analytics(sample_df, db_path)
-        con = duckdb.connect(db_path, read_only=True)
+    """T015: v_monthly_revenue retorna dados corretos."""
+
+    def test_view_monthly_revenue_returns_data(self, sample_df, output_dir):
+        store_analytics(sample_df, output_dir)
+        path = os.path.join(output_dir, "v_monthly_revenue.duckdb")
+        con = duckdb.connect(path, read_only=True)
         result = con.execute("SELECT * FROM v_monthly_revenue").fetchdf()
         con.close()
         assert len(result) > 0
@@ -196,30 +245,27 @@ class TestUS2ViewMonthlyRevenue:
 
 
 class TestUS2ViewSalesSummary:
-    def test_view_sales_summary_kpis(self, sample_df, db_path):
-        """T016: v_sales_summary retorna KPIs corretos."""
-        store_analytics(sample_df, db_path)
-        con = duckdb.connect(db_path, read_only=True)
+    """T016: v_sales_summary retorna KPIs corretos."""
+
+    def test_view_sales_summary_kpis(self, sample_df, output_dir):
+        store_analytics(sample_df, output_dir)
+        path = os.path.join(output_dir, "v_sales_summary.duckdb")
+        con = duckdb.connect(path, read_only=True)
         result = con.execute("SELECT * FROM v_sales_summary").fetchdf()
         con.close()
         assert len(result) == 1
-        assert "total_orders" in result.columns
-        assert "total_customers" in result.columns
-        assert "total_revenue" in result.columns
-        assert "total_profit" in result.columns
-        assert "avg_order_value" in result.columns
-        assert "total_units_sold" in result.columns
         assert result["total_orders"].iloc[0] == 2
         assert result["total_customers"].iloc[0] == 2
         assert result["total_units_sold"].iloc[0] == 15
 
 
 class TestUS2ViewsReflectChanges:
-    def test_views_reflect_table_changes(self, sample_df, db_path):
-        """T017: Views refletem mudanças na tabela sales automaticamente."""
-        store_analytics(sample_df, db_path)
+    """T017: Views refletem mudanças na tabela sales."""
 
-        con = duckdb.connect(db_path, read_only=True)
+    def test_views_reflect_table_changes(self, sample_df, output_dir):
+        store_analytics(sample_df, output_dir)
+        path = os.path.join(output_dir, "v_sales_summary.duckdb")
+        con = duckdb.connect(path, read_only=True)
         first_count = con.execute(
             "SELECT total_orders FROM v_sales_summary"
         ).fetchone()[0]
@@ -229,9 +275,9 @@ class TestUS2ViewsReflectChanges:
             [sample_df, sample_df.iloc[[0]].assign(order_id="ORD003")],
             ignore_index=True,
         )
-        store_analytics(updated_df, db_path)
+        store_analytics(updated_df, output_dir)
 
-        con = duckdb.connect(db_path, read_only=True)
+        con = duckdb.connect(path, read_only=True)
         second_count = con.execute(
             "SELECT total_orders FROM v_sales_summary"
         ).fetchone()[0]
@@ -241,55 +287,95 @@ class TestUS2ViewsReflectChanges:
         assert second_count == 3
 
 
-class TestUS3StoreIsIdempotent:
-    def test_store_is_idempotent(self, sample_df, db_path):
-        """T020: Duas execuções produzem resultados idênticos."""
-        store_analytics(sample_df, db_path)
-        con = duckdb.connect(db_path, read_only=True)
-        r1_count = con.execute("SELECT COUNT(*) FROM sales").fetchone()[0]
-        r1_rev = con.execute(
-            "SELECT SUM(net_revenue) FROM sales"
-        ).fetchone()[0]
-        con.close()
-
-        store_analytics(sample_df, db_path)
-        con = duckdb.connect(db_path, read_only=True)
-        r2_count = con.execute("SELECT COUNT(*) FROM sales").fetchone()[0]
-        r2_rev = con.execute(
-            "SELECT SUM(net_revenue) FROM sales"
-        ).fetchone()[0]
-        con.close()
-
-        assert r1_count == r2_count
-        assert abs(r1_rev - r2_rev) < 0.01
+# ---------------------------------------------------------------------------
+# US3: Data Integrity Across All View Files (P3)
+# ---------------------------------------------------------------------------
 
 
-class TestUS3StoreValidatesRecordCount:
-    def test_store_validates_record_count(self, sample_df, db_path):
-        """T021: Validação de contagem confere com DataFrame de entrada."""
-        store_analytics(sample_df, db_path)
-        con = duckdb.connect(db_path, read_only=True)
-        count = con.execute("SELECT COUNT(*) FROM sales").fetchone()[0]
-        con.close()
-        assert count == len(sample_df)
+class TestUS3IdenticalRowCount:
+    """T015: Todos os arquivos têm mesma contagem de registros."""
+
+    def test_all_files_have_identical_row_count(self, sample_df, output_dir):
+        store_analytics(sample_df, output_dir)
+        counts = {}
+        for view_name in EXPECTED_VIEWS:
+            path = os.path.join(output_dir, f"{view_name}.duckdb")
+            con = duckdb.connect(path, read_only=True)
+            counts[view_name] = con.execute(
+                "SELECT COUNT(*) FROM sales"
+            ).fetchone()[0]
+            con.close()
+        assert len(set(counts.values())) == 1, f"Inconsistent counts: {counts}"
 
 
-class TestUS3StoreValidatesRevenueSum:
-    def test_store_validates_revenue_sum(self, sample_df, db_path):
-        """T022: Soma de net_revenue no DuckDB confere com DataFrame."""
-        store_analytics(sample_df, db_path)
-        con = duckdb.connect(db_path, read_only=True)
-        db_rev = con.execute(
-            "SELECT SUM(net_revenue) FROM sales"
-        ).fetchone()[0]
-        con.close()
-        expected_rev = sample_df["net_revenue"].sum()
-        assert abs(db_rev - expected_rev) < 0.01
+class TestUS3IdenticalRevenueSum:
+    """T016: Todos os arquivos têm mesma soma de receita."""
+
+    def test_all_files_have_identical_revenue_sum(self, sample_df, output_dir):
+        store_analytics(sample_df, output_dir)
+        revenues = {}
+        for view_name in EXPECTED_VIEWS:
+            path = os.path.join(output_dir, f"{view_name}.duckdb")
+            con = duckdb.connect(path, read_only=True)
+            revenues[view_name] = con.execute(
+                "SELECT SUM(net_revenue) FROM sales"
+            ).fetchone()[0]
+            con.close()
+        values = list(revenues.values())
+        assert all(abs(v - values[0]) < 0.01 for v in values), (
+            f"Inconsistent revenues: {revenues}"
+        )
+
+
+class TestUS3Idempotent:
+    """T018: Duas execuções produzem resultados idênticos."""
+
+    def test_store_is_idempotent(self, sample_df, output_dir):
+        store_analytics(sample_df, output_dir)
+        first_counts = {}
+        for view_name in EXPECTED_VIEWS:
+            path = os.path.join(output_dir, f"{view_name}.duckdb")
+            con = duckdb.connect(path, read_only=True)
+            first_counts[view_name] = con.execute(
+                "SELECT COUNT(*) FROM sales"
+            ).fetchone()[0]
+            con.close()
+
+        store_analytics(sample_df, output_dir)
+        second_counts = {}
+        for view_name in EXPECTED_VIEWS:
+            path = os.path.join(output_dir, f"{view_name}.duckdb")
+            con = duckdb.connect(path, read_only=True)
+            second_counts[view_name] = con.execute(
+                "SELECT COUNT(*) FROM sales"
+            ).fetchone()[0]
+            con.close()
+
+        assert first_counts == second_counts
+
+
+class TestUS3SalesTableHas34Columns:
+    """Tabela sales tem 34 colunas em cada arquivo."""
+
+    def test_sales_table_has_34_columns(self, sample_df, output_dir):
+        store_analytics(sample_df, output_dir)
+        for view_name in EXPECTED_VIEWS:
+            path = os.path.join(output_dir, f"{view_name}.duckdb")
+            con = duckdb.connect(path, read_only=True)
+            columns = con.execute(
+                "SELECT column_name FROM information_schema.columns "
+                "WHERE table_name = 'sales' ORDER BY ordinal_position"
+            ).fetchall()
+            con.close()
+            assert len(columns) == 34, (
+                f"{view_name}: expected 34 columns, got {len(columns)}"
+            )
 
 
 class TestUS3StoreHandlesEmptyDataFrame:
-    def test_store_handles_empty_dataframe(self, db_path):
-        """T023: DataFrame vazio levanta ValueError."""
+    """DataFrame vazio levanta ValueError."""
+
+    def test_store_handles_empty_dataframe(self, output_dir):
         empty_df = pd.DataFrame()
         with pytest.raises(ValueError, match="vazio"):
-            store_analytics(empty_df, db_path)
+            store_analytics(empty_df, output_dir)

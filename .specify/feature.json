@@ -1,3 +1,3 @@
 {
-  "feature_directory": "specs/005-duckdb-storage"
+  "feature_directory": "specs/006-per-view-duckdb-files"
 }
